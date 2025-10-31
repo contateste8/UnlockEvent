@@ -1,0 +1,282 @@
+local function Auto1(difficulty, difficulty1, weak, imageid)
+--[[
+Auto Collect Candys - Brookhaven 🏡RP Halloween Event
+Made by @.contateste_
+( 100% Open Source)
+]]
+if getgenv()._AutoCollectCandysRunning then
+return
+end
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local workspace_objects = workspace:GetDescendants()
+local hasCandy = false
+for _, obj in ipairs(workspace_objects) do
+if obj:IsA("BasePart") and string.find(obj.Name, "CandyCorn") then
+hasCandy = true
+break
+end
+end
+local args = {
+[1] = difficulty
+}
+
+game:GetService("ReplicatedStorage").Remotes.ChangeDifficulty:FireServer(unpack(args))
+task.wait(1)
+getgenv()._AutoCollectCandysRunning = true
+local old = CoreGui:FindFirstChild("LoadingUI")
+if old then old:Destroy() end
+local Noclipping = false
+task.spawn(function()
+while true do
+if Noclipping then
+local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+for _, p in pairs(char:GetDescendants()) do
+if p:IsA("BasePart") then
+p.CanCollide = false
+end
+end
+end
+task.wait()
+end
+end)
+Noclipping = true
+workspace.FallenPartsDestroyHeight = 0/0
+function EnableAntiSit()
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local hum = lp.Character:WaitForChild("Humanoid")
+hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+end
+function DisableAntiSit()
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local hum = lp.Character:WaitForChild("Humanoid")
+hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+end
+EnableAntiSit()
+local Running = false
+task.spawn(function()
+while Running do
+local args = {
+    [1] = "MobileSprintRequestedOff"
+}
+
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1Max1y"):FireServer(unpack(args))
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
+game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
+task.wait()
+  end
+end)
+Running = true
+local screenGui = Instance.new("ScreenGui", CoreGui)
+screenGui.Name = "LoadingUI"
+screenGui.IgnoreGuiInset = true
+screenGui.DisplayOrder = 999999
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local imageBackground = Instance.new("ImageLabel", screenGui)
+imageBackground.Size = UDim2.new(1, 0, 1, 0)
+imageBackground.Position = UDim2.new(0, 0, 0, 0)
+imageBackground.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+imageBackground.BorderSizePixel = 0
+imageBackground.Image = imageid
+imageBackground.ImageTransparency = 1
+imageBackground.ScaleType = Enum.ScaleType.Stretch
+imageBackground.ZIndex = 0
+local blocker = Instance.new("TextButton", screenGui)
+blocker.Size = UDim2.new(1, 0, 1, 0)
+blocker.Position = UDim2.new(0, 0, 0, 0)
+blocker.BackgroundTransparency = 1
+blocker.BorderSizePixel = 0
+blocker.Text = ""
+blocker.Modal = true
+blocker.AutoButtonColor = false
+blocker.ZIndex = 1
+local container = Instance.new("Frame", screenGui)
+container.Size = UDim2.new(0, 400, 0, 60)
+container.Position = UDim2.new(0.5, -200, 0.5, -30)
+container.BackgroundTransparency = 1
+container.ZIndex = 5
+local label = Instance.new("TextLabel", container)
+label.Size = UDim2.new(1, 0, 0, 30)
+label.Position = UDim2.new(0, 0, 0, 0)
+label.Text = "Coletando doces (aguarde um pouco) (Dificuldade: " .. difficulty1 .. ") (Semana: " .. weak .. ")"
+label.Font = Enum.Font.GothamBold
+label.TextSize = 20
+label.TextColor3 = Color3.new(1, 1, 1)
+label.BackgroundTransparency = 1
+label.ZIndex = 5
+local barBackground = Instance.new("Frame", container)
+barBackground.Size = UDim2.new(1, 0, 0, 20)
+barBackground.Position = UDim2.new(0, 0, 1, -20)
+barBackground.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+barBackground.BorderSizePixel = 0
+barBackground.ClipsDescendants = true
+barBackground.ZIndex = 5
+Instance.new("UICorner", barBackground).CornerRadius = UDim.new(0, 10)
+local progress = Instance.new("Frame", barBackground)
+progress.Size = UDim2.new(0, 0, 1, 0)
+progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+progress.BorderSizePixel = 0
+progress.ZIndex = 5
+Instance.new("UICorner", progress).CornerRadius = UDim.new(0, 10)
+local gradient = Instance.new("UIGradient", progress)
+gradient.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 102, 0)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(102, 0, 153))
+}
+local percentLabel = Instance.new("TextLabel", barBackground)
+percentLabel.Size = UDim2.new(1, 0, 1, 0)
+percentLabel.Position = UDim2.new(0, 0, 0, 0)
+percentLabel.BackgroundTransparency = 1
+percentLabel.Font = Enum.Font.GothamBold
+percentLabel.TextSize = 16
+percentLabel.TextColor3 = Color3.new(1, 1, 1)
+percentLabel.Text = "0%"
+percentLabel.ZIndex = 6
+TweenService:Create(imageBackground, TweenInfo.new(1), { ImageTransparency = 0.2 }):Play()
+local FinishCandyUI
+local function UpdateCandyProgress(current, total)
+local percent = math.floor((current / total) * 100)
+if percent > 100 then percent = 100 end
+percentLabel.Text = percent .. "%"
+TweenService:Create(progress, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+Size = UDim2.new(percent / 100, 0, 1, 0)
+}):Play()
+if percent >= 100 then
+task.delay(0.3, FinishCandyUI)
+end
+end
+FinishCandyUI = function()
+label.Text = "Todos os doces foram coletados"
+TweenService:Create(imageBackground, TweenInfo.new(0.5), { ImageTransparency = 1 }):Play()
+TweenService:Create(container, TweenInfo.new(0.6), { Position = UDim2.new(0.5, -200, 0.5, 40) }):Play()
+task.wait(0.7)
+screenGui:Destroy()
+Noclipping = false
+DisableAntiSit()
+Running = false
+task.wait(0.5)
+local args = {
+    [1] = "MobileSprintRequestedOn"
+}
+
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1Max1y"):FireServer(unpack(args))
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
+game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+workspace.FallenPartsDestroyHeight = -500
+getgenv()._AutoCollectCandysRunning = false
+end
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EggCollected")
+local originalCFrame = HumanoidRootPart.CFrame
+local platforms = {}
+local connections = {}
+local candyList = {}
+local function createSafetyPlatform(position)
+local part = Instance.new("Part")
+part.Size = Vector3.new(10, 1, 10)
+part.Anchored = true
+part.Transparency = 1
+part.CanCollide = true
+part.CFrame = CFrame.new(position.X, position.Y - 3, position.Z)
+part.Name = "SafetyPlatform"
+part.Parent = workspace
+table.insert(platforms, part)
+end
+createSafetyPlatform(HumanoidRootPart.Position)
+local timeout = 20
+local startTime = tick()
+local hasCandy = false
+repeat
+    task.wait(1)
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and string.find(obj.Name, "CandyCorn") then
+            hasCandy = true
+            break
+        end
+    end
+until hasCandy or tick() - startTime > timeout
+if not hasCandy then
+    label.Text = "Nenhum doce encontrado"
+    task.wait(2)
+    FinishCandyUI()
+    return
+end
+for _, obj in ipairs(workspace:GetDescendants()) do
+    if obj:IsA("BasePart") and string.find(obj.Name, "CandyCorn") then
+        table.insert(candyList, obj)
+    end
+end
+local function teleportNear(target)
+local pos = target.Position + Vector3.new(10, 0, 0)
+HumanoidRootPart.CFrame = CFrame.new(pos)
+createSafetyPlatform(pos)
+end
+for i, candy in ipairs(candyList) do
+if candy and candy:IsDescendantOf(workspace) then
+teleportNear(candy)
+UpdateCandyProgress(i, #candyList)
+task.wait(1)
+local args = { [1] = candy.Name }
+pcall(function()
+Remote:InvokeServer(unpack(args))
+end)
+end
+end
+HumanoidRootPart.CFrame = originalCFrame
+createSafetyPlatform(originalCFrame.Position)
+for _, part in ipairs(platforms) do
+if part and part.Parent then
+part:Destroy()
+end
+end
+platforms = nil
+candyList = nil
+connections = nil
+FinishCandyUI()
+end
+if getgenv()._AutoCollectCandysAllDifficulties then
+return
+end
+getgenv()._AutoCollectCandysAllDifficulties = true
+local CameraTP = true
+task.spawn(function()
+while CameraTP do
+workspace.CurrentCamera.CameraType, workspace.CurrentCamera.CFrame = Enum.CameraType.Scriptable, CFrame.new(1e10, 1e10, 1e10)
+task.wait()
+   end
+end)
+Auto1("Baby1", "Bebê", "1", "rbxassetid://70815294682417")
+task.wait()
+Auto1("Easy1", "Fácil", "1", "rbxassetid://70815294682417")
+task.wait()
+Auto1("Medium1", "Médio", "1", "rbxassetid://70815294682417")
+task.wait()
+Auto1("Hard1", "Difícil", "1", "rbxassetid://70815294682417")
+task.wait()
+Auto1("Extreme1", "Extremo", "1", "rbxassetid://70815294682417")
+task.wait()
+Auto1("Baby2", "Bebê", "2", "rbxassetid://126796671794166")
+task.wait()
+Auto1("Easy2", "Fácil", "2", "rbxassetid://126796671794166")
+task.wait()
+Auto1("Medium2", "Médio", "2", "rbxassetid://126796671794166")
+task.wait()
+Auto1("Hard2", "Difícil", "2", "rbxassetid://126796671794166")
+task.wait()
+Auto1("Extreme2", "Extremo", "2", "rbxassetid://126796671794166")
+CameraTP = false
+workspace.CurrentCamera.CameraType, workspace.CurrentCamera.CameraSubject = Enum.CameraType.Custom, game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+getgenv()._AutoCollectCandysAllDifficulties = false
