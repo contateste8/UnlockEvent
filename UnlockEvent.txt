@@ -1,6 +1,6 @@
 local function Auto1(difficulty, difficulty1, weak, imageid)
 --[[
-Auto Collect Candys - Brookhaven 🏡RP Halloween Event
+Auto Unlock Event - Brookhaven 🏡RP Halloween Event
 Made by @.contateste_
 ( 100% Open Source)
 ]]
@@ -279,4 +279,5 @@ task.wait()
 Auto1("Extreme2", "Extremo", "2", "rbxassetid://126796671794166")
 CameraTP = false
 workspace.CurrentCamera.CameraType, workspace.CurrentCamera.CameraSubject = Enum.CameraType.Custom, game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+
 getgenv()._AutoCollectCandysAllDifficulties = false
