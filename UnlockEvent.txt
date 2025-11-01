@@ -1,6 +1,6 @@
 local function Auto1(difficulty, difficulty1, weak, imageid)
 --[[
-Auto Unlock Event - Brookhaven 🏡RP Halloween Event
+Auto Collect Candys - Brookhaven 🏡RP Halloween Event
 Made by @.contateste_
 ( 100% Open Source)
 ]]
@@ -27,7 +27,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage").Remotes.ChangeDifficulty:FireServer(unpack(args))
-task.wait(1)
+task.wait(1.5)
 getgenv()._AutoCollectCandysRunning = true
 local old = CoreGui:FindFirstChild("LoadingUI")
 if old then old:Destroy() end
@@ -74,6 +74,32 @@ task.wait()
   end
 end)
 Running = true
+local screenGui1 = Instance.new("ScreenGui", CoreGui)
+screenGui1.Name = "BlackBlocker"
+screenGui1.IgnoreGuiInset = true
+screenGui1.DisplayOrder = 999998
+screenGui1.ResetOnSpawn = false
+screenGui1.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local blackBlocker = Instance.new("TextButton", screenGui1)
+blackBlocker.Size = UDim2.new(1, 0, 1, 0)
+blackBlocker.Position = UDim2.new(0, 0, 0, 0)
+blackBlocker.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+blackBlocker.BorderSizePixel = 0
+blackBlocker.Text = ""
+blackBlocker.Modal = true
+blackBlocker.AutoButtonColor = false
+blackBlocker.ZIndex = 0
+local label1 = Instance.new("TextLabel", blackBlocker)
+label1.AnchorPoint = Vector2.new(0.5, 0.5)
+label1.Position = UDim2.new(0.5, 0, 0.5, 0)
+label1.Size = UDim2.new(0, 550, 0, 25)
+label1.BackgroundTransparency = 1
+label1.Text = "Indo para a próxima dificuldade"
+label1.Font = Enum.Font.GothamBold
+label1.TextSize = 30
+label1.TextColor3 = Color3.fromRGB(255, 255, 255)
+label1.TextStrokeTransparency = 1
+label1.ZIndex = 1
 local screenGui = Instance.new("ScreenGui", CoreGui)
 screenGui.Name = "LoadingUI"
 screenGui.IgnoreGuiInset = true
@@ -157,12 +183,10 @@ FinishCandyUI = function()
 label.Text = "Todos os doces foram coletados"
 TweenService:Create(imageBackground, TweenInfo.new(0.5), { ImageTransparency = 1 }):Play()
 TweenService:Create(container, TweenInfo.new(0.6), { Position = UDim2.new(0.5, -200, 0.5, 40) }):Play()
-task.wait(0.7)
 screenGui:Destroy()
 Noclipping = false
 DisableAntiSit()
 Running = false
-task.wait(0.5)
 local args = {
     [1] = "MobileSprintRequestedOn"
 }
@@ -200,7 +224,7 @@ local timeout = 20
 local startTime = tick()
 local hasCandy = false
 repeat
-    task.wait(1)
+    task.wait(1.5)
     for _, obj in ipairs(workspace:GetDescendants()) do
         if obj:IsA("BasePart") and string.find(obj.Name, "CandyCorn") then
             hasCandy = true
@@ -259,25 +283,27 @@ task.wait()
    end
 end)
 Auto1("Baby1", "Bebê", "1", "rbxassetid://70815294682417")
-task.wait()
+task.wait(1)
 Auto1("Easy1", "Fácil", "1", "rbxassetid://70815294682417")
-task.wait()
+task.wait(1)
 Auto1("Medium1", "Médio", "1", "rbxassetid://70815294682417")
-task.wait()
+task.wait(1)
 Auto1("Hard1", "Difícil", "1", "rbxassetid://70815294682417")
-task.wait()
+task.wait(1)
 Auto1("Extreme1", "Extremo", "1", "rbxassetid://70815294682417")
-task.wait()
+task.wait(1)
 Auto1("Baby2", "Bebê", "2", "rbxassetid://126796671794166")
-task.wait()
+task.wait(1)
 Auto1("Easy2", "Fácil", "2", "rbxassetid://126796671794166")
-task.wait()
+task.wait(1)
 Auto1("Medium2", "Médio", "2", "rbxassetid://126796671794166")
-task.wait()
+task.wait(1)
 Auto1("Hard2", "Difícil", "2", "rbxassetid://126796671794166")
-task.wait()
+task.wait(1)
 Auto1("Extreme2", "Extremo", "2", "rbxassetid://126796671794166")
+task.wait(1)
 CameraTP = false
+task.wait()
 workspace.CurrentCamera.CameraType, workspace.CurrentCamera.CameraSubject = Enum.CameraType.Custom, game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-
+screenGui1:Destroy()
 getgenv()._AutoCollectCandysAllDifficulties = false
